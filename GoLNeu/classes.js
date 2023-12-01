@@ -217,7 +217,7 @@ class Predator extends LivingCreature{
             if (emptyFields.length > 0) {
                 let pos = random(emptyFields);
 
-                predArr.push(new Predator(pos[0], pos[1]));
+                predatorArr.push(new Predator(pos[0], pos[1]));
                 matrix[pos[1]][pos[0]] = this.colorValue;
             }
             this.eatCount = 0;
