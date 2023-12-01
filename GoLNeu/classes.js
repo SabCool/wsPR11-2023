@@ -36,6 +36,7 @@ class LivingCreature {
 
 class Grass extends LivingCreature{
     constructor(x, y) {
+        super(x,y);
         // Farbe - grün
         this.colorValue = 1;
         this.roundCount = 0;
@@ -59,6 +60,7 @@ class Grass extends LivingCreature{
 
 class Grazer extends LivingCreature{
     constructor(x, y) {
+        super(x,y)
         // Farbe - yellow
         this.colorValue = 2;
         this.eatCount = 0;
@@ -138,24 +140,11 @@ class Grazer extends LivingCreature{
     }
 }
 
-class Predator {
+class Predator extends LivingCreature{
     constructor(x, y) {
+        super(x,y);
         // Farbe - red
         this.colorValue = 3;
-        // Position
-        this.x = x;
-        this.y = y;
-        // Sicht auf Nachbarfelder
-        this.neighbors = [
-            [this.x - 1, this.y - 1],
-            [this.x, this.y - 1],
-            [this.x + 1, this.y - 1],
-            [this.x - 1, this.y],
-            [this.x + 1, this.y],
-            [this.x - 1, this.y + 1],
-            [this.x, this.y + 1],
-            [this.x + 1, this.y + 1]
-        ];
         this.eatCount = 0;
         this.notEaten = 0;
     }
@@ -175,19 +164,7 @@ class Predator {
 
     findFields(symbol) {
         this.updateNeighbors();
-        let found = [];
-        for (let i = 0; i < this.neighbors.length; i++) {
-            const pos = this.neighbors[i]; // [x, y]
-            let posX = pos[0];
-            let posY = pos[1];
-            if (posX >= 0 && posX < matrix[0].length &&
-                posY >= 0 && posY < matrix.length) {
-                if (matrix[posY][posX] == symbol) {
-                    found.push(pos);
-                }
-            }
-        }
-        return found;
+        return super.findFields(symbol);
     }
 
     updateGameAndPos(newX, newY) {
