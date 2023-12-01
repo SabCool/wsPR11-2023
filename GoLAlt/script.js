@@ -51,11 +51,6 @@ function setup(){
     background("#acacac");
     frameRate(fr);
 
-    // Testobjekt erstellen
-    // let grassObj1 = new Grass(1, 2);
-    // console.log(grassObj1);
-    // console.log(grassObj1.chooseFields(0));
-
     // durch Matrix laufen und Lebewesen erstellen
     for (let y = 0; y < matrix.length; y++) {
         for (let x = 0; x < matrix[y].length; x++) {
