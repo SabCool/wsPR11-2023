@@ -9,13 +9,25 @@ const app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
 
+app.use(express.static('./client'));
+
+app.get('/', function (req, res){
+    res.redirect('index.html');
+});
+
 server.listen(3000, function (){
     console.log("Der Server läuft auf port 3000...");
     initGame();
     setInterval(function(){
         updateGame();
+        
     }, 1000);
    
+});
+
+io.on('connection', function(socket){
+    console.log('ws connection established...');
+    socket.emit('matrix', matrix);
 });
 
 // game logic on server
