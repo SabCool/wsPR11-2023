@@ -9,6 +9,9 @@ const app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
 
+let clients = [];
+let isGameRunning = false;
+
 app.use(express.static('./client'));
 
 app.get('/', function (req, res){
@@ -17,18 +20,30 @@ app.get('/', function (req, res){
 
 server.listen(3000, function (){
     console.log("Der Server läuft auf port 3000...");
-    initGame();
-    setInterval(function(){
-        updateGame();
+    // initGame();
+    // setInterval(function(){
+    //     updateGame();
         
-    }, 1000);
+    // }, 1000);
+
+    io.on('connection', function(socket){
+        console.log('ws connection established...');
+        clients.push(socket.id);
+        socket.emit('matrix', matrix);
+
+
+        if(clients.length == 1 && isGameRunning == false){
+            console.log("Starte Spiel... wenn noch nicht gestartet...");
+            // initGame();
+            // setInterval(updateGame, 1000);
+            // isGameRunning = true;
+            // setInterval(raining, 4000);
+        }
+    });
    
 });
 
-io.on('connection', function(socket){
-    console.log('ws connection established...');
-    socket.emit('matrix', matrix);
-});
+
 
 // game logic on server
 matrix = [
@@ -88,6 +103,9 @@ function initGame(){
             } 
         }   
     }
+
+    // console.log("Sende matrix zu clients")
+    // io.sockets.emit('matrix', matrix);
 }
 
 function updateGame(){
@@ -104,4 +122,6 @@ function updateGame(){
 
     }
     //console.log(matrix);
+    // console.log("sende matrix zu clients...");
+    // io.sockets.emit('matrix', matrix);
 }
