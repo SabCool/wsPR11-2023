@@ -11,6 +11,7 @@ let io = require('socket.io')(server);
 
 let clients = [];
 let isGameRunning = false;
+let interValID;
 
 app.use(express.static('./client'));
 
@@ -23,26 +24,38 @@ server.listen(3000, function (){
     // initGame();
     // setInterval(function(){
     //     updateGame();
-        
     // }, 1000);
 
     io.on('connection', function(socket){
         console.log('ws connection established...');
         clients.push(socket.id);
-        socket.emit('matrix', matrix);
+        // socket.emit('matrix', matrix);
 
-
+        // Spielstart - NEU
         if(clients.length == 1 && isGameRunning == false){
             console.log("Starte Spiel... wenn noch nicht gestartet...");
-            // initGame();
-            // setInterval(updateGame, 1000);
-            // isGameRunning = true;
+            initGame();
+            interValID= setInterval(updateGame, 1000);
+            isGameRunning = true;
             // setInterval(raining, 4000);
         }
+
+        // Verhalten wenn Clients verlassen
+        socket.on('disconnect', function(){
+            console.log('client left...');
+            const foundIndex = clients.findIndex(id => id === socket.id);
+            if(foundIndex >= 0){
+                clients.splice(foundIndex, 1);
+            } 
+            if(clients.length === 0){
+                isGameRunning = false;
+                clearInterval(interValID);  
+                console.log("Spiel gestoppt: keine Clients", clients.length); 
+            }
+        });
     });
    
 });
-
 
 
 // game logic on server
@@ -104,8 +117,8 @@ function initGame(){
         }   
     }
 
-    // console.log("Sende matrix zu clients")
-    // io.sockets.emit('matrix', matrix);
+    console.log("Sende matrix zu clients")
+    io.sockets.emit('matrix', matrix);
 }
 
 function updateGame(){
@@ -122,6 +135,6 @@ function updateGame(){
 
     }
     //console.log(matrix);
-    // console.log("sende matrix zu clients...");
-    // io.sockets.emit('matrix', matrix);
+    console.log("sende matrix zu clients...");
+    io.sockets.emit('matrix', matrix);
 }
